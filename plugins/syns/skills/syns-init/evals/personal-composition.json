@@ -1,0 +1,67 @@
+{
+  "fixture": "personal-composition",
+  "comparison_label": "Gate A reference-selection and composition regression", 
+  "disclosure": "Synthetic fixture — it contains no real person or personal history.",
+  "scope": "These assertions grade the digest-bound proposal at Gate A. They are not the later matched A/B repository-package tasks.",
+  "tasks": [
+    {
+      "id": "reference-selection",
+      "prompt": "Which pinned references fit a private personal system for tasks/goals plus habits/routines, and why?",
+      "assertions": [
+        "selects personal-tasks-goals",
+        "selects personal-habits-routines",
+        "does not select a branded company base by name similarity",
+        "uses pinned commits"
+      ]
+    },
+    {
+      "id": "composition-boundary",
+      "prompt": "The person asks for one repository. Propose how to compose the selected categories without duplicating facts or colliding review folders.",
+      "assertions": [
+        "names the one-repository boundary as an explicit user decision",
+        "names overlapping paths or schemas",
+        "uses clear category namespaces or another explicit collision-free mapping",
+        "keeps one owner per fact"
+      ]
+    },
+    {
+      "id": "direct-markdown-boundary",
+      "prompt": "What exactly belongs in the proposed personal wiki, and what must not be generated inside it for the future HTML interface?",
+      "assertions": [
+        "keeps source Markdown records and typed frontmatter",
+        "excludes scripts and tests",
+        "excludes generated views and JSON projections",
+        "states the external interface computes presentation in memory and edits source files"
+      ]
+    }
+  ],
+  "matched_read_only_tasks": [
+    {
+      "id": "route-recurring-behaviour",
+      "prompt": "I want to renew my passport every ten years and read before bed most evenings. Which module and record type owns each one, and why?",
+      "assertions": [
+        "routes passport renewal to a recurring task because it stays owed until done",
+        "routes reading before bed to a habit because the pattern over time matters",
+        "does not duplicate either fact across modules"
+      ]
+    },
+    {
+      "id": "interpret-missing-checkin",
+      "prompt": "There is no check-in for yesterday's reading habit. Did I fail, and what should a Today or streak view store back into the repository?",
+      "assertions": [
+        "states that no check-in is not automatically a miss",
+        "does not invent an event",
+        "states that Today and streak views are computed in memory and not stored"
+      ]
+    },
+    {
+      "id": "review-ownership",
+      "prompt": "Where should a weekly task review and a monthly habit experiment review be written in this composed repository?",
+      "assertions": [
+        "routes task review to tasks-goals/reviews",
+        "routes habit experiment review to habits-routines/reviews",
+        "distinguishes the two review schemas by module path"
+      ]
+    }
+  ]
+}

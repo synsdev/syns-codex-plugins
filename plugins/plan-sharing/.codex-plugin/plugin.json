@@ -1,0 +1,25 @@
+{
+  "name": "plan-sharing",
+  "version": "0.1.0",
+  "description": "Captures the plan produced in Codex Plan Mode into the current Syns repo and warns when it overlaps another agent's plan in that repo.",
+  "author": {
+    "name": "Bartosz Sojka",
+    "email": "bartsoj@gmail.com",
+    "url": "https://syns.dev"
+  },
+  "homepage": "https://syns.dev",
+  "repository": "https://github.com/synsdev/syns-codex-plugins",
+  "license": "MIT",
+  "keywords": ["syns", "multi-agent", "coordination", "plan", "hooks", "conflict-detection"],
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Syns Plan Sharing",
+    "shortDescription": "Share Plan Mode plans and detect cross-agent conflicts.",
+    "longDescription": "When a Codex turn ends in Plan Mode, captures the <proposed_plan> block, saves it into the current Syns repo's plans/ folder (pull, write, push), and compares it against the other plans there. On a conflict it asks the agent to revise or report before exiting Plan Mode. Silent no-op outside a Syns repo or outside Plan Mode.",
+    "developerName": "Syns",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://syns.dev",
+    "brandColor": "#5e6ad2"
+  }
+}

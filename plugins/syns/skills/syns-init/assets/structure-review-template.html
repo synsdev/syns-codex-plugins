@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>{{TITLE}} — structure review</title>
+<style>
+  :root {
+    --paper: #eee9de;
+    --sheet: #fbfaf5;
+    --ink: #202521;
+    --muted: #626b66;
+    --rule: #c7c8c0;
+    --rail: #adb4ae;
+    --blue: #285f82;
+    --blue-wash: #eaf2f6;
+    --green: #316b54;
+    --green-wash: #e9f2ec;
+    --amber: #825f1c;
+    --amber-wash: #f6efdf;
+    --slate: #59646d;
+    --slate-wash: #eef0ee;
+    --danger: #853f35;
+    --danger-wash: #f5eae6;
+    --shadow: rgba(31, 39, 34, .09);
+  }
+
+  * { box-sizing: border-box; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  html { min-width: 320px; background: var(--paper); }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--paper);
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1.48;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono, table, input, textarea, button, select {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  }
+  a { color: var(--blue); text-underline-offset: 3px; }
+  p, ul { margin-top: 0; }
+
+  .sheet {
+    width: min(1440px, calc(100% - 40px));
+    margin: 20px auto 42px;
+    background: var(--sheet);
+    border: 1px solid #d0cfc7;
+    box-shadow: 0 16px 44px var(--shadow);
+  }
+  .masthead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 32px;
+    align-items: end;
+    padding: 30px 42px 27px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .kicker, .section-number, .micro-label {
+    margin: 0 0 9px;
+    color: var(--blue);
+    font: 800 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+  h1 {
+    max-width: 900px;
+    margin: 0;
+    font-size: clamp(31px, 4.4vw, 58px);
+    line-height: .98;
+    letter-spacing: -.045em;
+    font-weight: 600;
+  }
+  .document-mark {
+    display: grid;
+    grid-template-columns: 23px auto;
+    gap: 10px;
+    align-items: center;
+    color: var(--muted);
+    font: 700 9px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .document-mark i {
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 26px;
+    border: 1.5px solid var(--ink);
+  }
+  .document-mark i::before, .document-mark i::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    border-top: 1px solid var(--ink);
+  }
+  .document-mark i::before { top: 8px; }
+  .document-mark i::after { top: 15px; }
+
+  main { padding: 0 42px 42px; }
+  .conclusion {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr);
+    gap: 36px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .summary {
+    max-width: 860px;
+    margin: 0;
+    font-size: clamp(20px, 2.25vw, 31px);
+    line-height: 1.24;
+    letter-spacing: -.018em;
+  }
+  .scope-note {
+    border-left: 4px solid var(--amber);
+    padding: 5px 0 3px 17px;
+    font-size: 14px;
+  }
+  .scope-note strong { display: block; margin-bottom: 4px; color: var(--amber); }
+  .scope-note p:last-child { margin-bottom: 0; }
+
+  .disclosure {
+    display: grid;
+    grid-template-columns: 145px minmax(0, 1fr);
+    gap: 16px;
+    margin: 22px 0 0;
+    padding: 12px 15px;
+    border: 1px solid #d6bd86;
+    background: var(--amber-wash);
+    color: #5f4b22;
+    font-size: 13px;
+  }
+  .disclosure strong {
+    font: 800 10px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .digest-strip {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    border-bottom: 1px solid var(--rule);
+  }
+  .digest-title { padding: 16px 15px 15px 0; }
+  .digest-title p { margin: 0; color: var(--muted); font-size: 12px; }
+  .digests {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    border-left: 1px solid var(--rule);
+  }
+  .digests > div { min-width: 0; padding: 14px 15px; border-right: 1px solid var(--rule); }
+  .digests > div:last-child { border-right: 0; }
+  .digests span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font: 800 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+  }
+  .digests code { display: block; overflow-wrap: anywhere; font-size: 10px; color: var(--ink); }
+
+  .review-section { padding: 31px 0 32px; border-bottom: 1px solid var(--rule); }
+  .section-head {
+    display: grid;
+    grid-template-columns: 172px minmax(0, 1fr) minmax(220px, 430px);
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 17px;
+  }
+  .section-number { padding-top: 5px; color: var(--muted); white-space: nowrap; font-size: 8px; letter-spacing: .1em; }
+  h2 { margin: 0; font-size: clamp(22px, 2.5vw, 32px); line-height: 1.04; letter-spacing: -.025em; font-weight: 600; }
+  .section-head > p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  h3 {
+    margin: 0 0 10px;
+    font: 800 11px/1.25 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .split > * { min-width: 0; }
+  .note-band { padding: 15px 17px; border-left: 3px solid var(--slate); background: var(--slate-wash); font-size: 13px; }
+  .note-band.blue { border-color: var(--blue); background: var(--blue-wash); }
+  .note-band.amber { border-color: var(--amber); background: var(--amber-wash); }
+  .note-band p:last-child, .note-band ul:last-child { margin-bottom: 0; }
+
+  .scroll-region {
+    max-width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    scrollbar-color: var(--slate) var(--slate-wash);
+  }
+  .scroll-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 0 0 7px;
+    color: var(--muted);
+    font: 700 9px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .scroll-label span:last-child { display: none; }
+
+  table { width: 100%; min-width: 800px; border-collapse: collapse; font-size: 11px; line-height: 1.4; }
+  th {
+    padding: 9px 11px;
+    border-bottom: 2px solid var(--ink);
+    background: #f2f0e9;
+    text-align: left;
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  td { padding: 10px 11px; border-bottom: 1px solid #deded7; vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--blue-wash); }
+  td { overflow-wrap: anywhere; word-break: break-word; white-space: normal; }
+  td code { white-space: normal; overflow-wrap: anywhere; }
+  @media (min-width: 901px) {
+    .scroll-region table { min-width: 100%; table-layout: fixed; }
+  }
+
+  .tree-frame { position: relative; min-width: 1040px; background: #f8f7f2; }
+  .tree-head, .tree-row {
+    display: grid;
+    grid-template-columns: minmax(235px, 1.05fr) minmax(300px, 1.3fr) 130px minmax(260px, 1.15fr);
+    gap: 0;
+  }
+  .tree-head {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    margin-left: 40px;
+    border-bottom: 2px solid var(--ink);
+    background: #f2f0e9;
+    color: var(--muted);
+    font: 800 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+  }
+  .tree-head span { padding: 9px 10px; }
+  .repo-root {
+    position: relative;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    padding-left: 40px;
+    border-bottom: 1px solid var(--rule);
+    font: 800 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .repo-root::after {
+    content: "";
+    position: absolute;
+    left: 48px;
+    top: 31px;
+    bottom: -21px;
+    border-left: 2px solid var(--rail);
+  }
+  .folder-mark {
+    display: inline-block;
+    width: 16px;
+    height: 11px;
+    margin-right: 9px;
+    border: 1.5px solid currentColor;
+    position: relative;
+  }
+  .folder-mark::before { content: ""; position: absolute; left: 1px; top: -5px; width: 7px; height: 4px; border: 1.5px solid currentColor; border-bottom: 0; }
+  .semantic-key { display: flex; gap: 20px; flex-wrap: wrap; padding: 9px 12px 9px 40px; border-bottom: 1px solid var(--rule); font: 700 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); }
+  .semantic-key span::before { content: ""; display: inline-block; width: 14px; height: 8px; margin-right: 6px; border-left: 4px solid var(--key); background: var(--wash); }
+  .key-source { --key: var(--blue); --wash: var(--blue-wash); }
+  .key-human, .key-approved { --key: var(--green); --wash: var(--green-wash); }
+  .key-inference, .key-unknown { --key: var(--amber); --wash: var(--amber-wash); }
+  .key-neutral, .key-omitted { --key: var(--slate); --wash: var(--slate-wash); }
+  .repo-tree { position: relative; margin: 0; padding: 13px 0 14px 40px; list-style: none; }
+  .repo-tree::before { content: ""; position: absolute; left: 48px; top: 0; bottom: 30px; border-left: 2px solid var(--rail); }
+  .tree-band { position: relative; margin: 8px 0 4px 22px; padding: 8px 12px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: #ebe9e1; color: var(--muted); font: 800 9px/1.2 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .tree-band::before { content: ""; position: absolute; right: 100%; top: 50%; width: 22px; border-top: 1px solid var(--rail); }
+  .tree-row {
+    --accent: var(--slate);
+    --wash: var(--slate-wash);
+    position: relative;
+    min-height: 47px;
+    margin-left: 22px;
+    border-bottom: 1px solid #d8d9d2;
+    box-shadow: inset 3px 0 var(--accent);
+    background: var(--wash);
+    font-size: 11px;
+    line-height: 1.32;
+  }
+  .tree-row::before { content: ""; position: absolute; right: 100%; top: 23px; width: 22px; border-top: 1px solid var(--rail); }
+  .tree-row > * { min-width: 0; padding: 10px; border-right: 1px solid rgba(70, 78, 72, .11); overflow-wrap: anywhere; }
+  .tree-row > *:last-child { border-right: 0; }
+  .tree-row code { color: var(--ink); font-weight: 800; }
+  .tree-row small { color: var(--muted); font-size: 10px; }
+  .origin-source, .origin-source-required, .origin-derived { --accent: var(--blue); --wash: var(--blue-wash); }
+  .origin-human, .origin-approved, .origin-kept { --accent: var(--green); --wash: var(--green-wash); }
+  .origin-inference, .origin-unknown, .origin-unresolved { --accent: var(--amber); --wash: var(--amber-wash); }
+  .origin-omitted, .origin-neutral, .origin-generated { --accent: var(--slate); --wash: var(--slate-wash); }
+
+  .unknowns { columns: 2 280px; column-gap: 38px; margin: 0; padding-left: 21px; font-size: 14px; }
+  .unknowns li { break-inside: avoid; margin: 0 0 10px; padding-left: 5px; }
+  .unknowns li::marker { color: var(--amber); font-family: ui-monospace, monospace; font-weight: 900; }
+  .evaluation-plan { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--rule); }
+  .evaluation-plan > div { display: grid; grid-template-columns: 145px minmax(0, 1fr); gap: 12px; padding: 12px 14px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); font-size: 12px; }
+  .evaluation-plan > div:nth-child(even) { border-right: 0; }
+  .evaluation-plan > div:nth-last-child(-n+2) { border-bottom: 0; }
+  .evaluation-plan strong { font-family: ui-monospace, monospace; color: var(--blue); }
+
+  .risk-list { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--rule); }
+  .risk-list article { padding: 16px; border-right: 1px solid var(--rule); }
+  .risk-list article:last-child { border-right: 0; }
+  .risk-list p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .approval {
+    margin: 34px -42px -42px;
+    padding: 29px 42px 34px;
+    border-top: 3px solid var(--amber);
+    background: #f5eedf;
+  }
+  .approval-grid { display: grid; grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr); gap: 38px; }
+  .approval h2 { margin-bottom: 12px; }
+  .approval-copy { max-width: 520px; font-size: 14px; }
+  .approval-copy strong { color: var(--amber); }
+  fieldset { min-width: 0; margin: 0 0 18px; padding: 0; border: 0; }
+  legend { margin-bottom: 10px; font: 800 10px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .1em; text-transform: uppercase; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1px solid #b9ac8d; background: var(--sheet); }
+  .choice { position: relative; min-height: 78px; border-right: 1px solid #b9ac8d; }
+  .choice:last-child { border-right: 0; }
+  .choice input { position: absolute; top: 15px; left: 13px; width: 18px; height: 18px; accent-color: var(--amber); }
+  .choice label { display: block; min-height: 78px; padding: 13px 11px 12px 41px; cursor: pointer; font: 800 11px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .choice label span { display: block; margin-top: 4px; color: var(--muted); font: 400 10px/1.35 Georgia, serif; }
+  .choice:has(input:checked) { background: var(--amber-wash); box-shadow: inset 0 0 0 2px var(--amber); }
+  label[for="comments"] { display: block; margin-bottom: 7px; font: 800 10px/1.3 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+  textarea { width: 100%; min-height: 94px; resize: vertical; padding: 11px; border: 1px solid #a9a89f; border-radius: 0; background: var(--sheet); color: var(--ink); font-size: 12px; line-height: 1.45; }
+  .submit-line { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 12px; }
+  .submit-line p { margin: 0; color: var(--muted); font-size: 11px; }
+  button {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--ink);
+    color: var(--sheet);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  button:hover { background: var(--amber); border-color: var(--amber); }
+  button:disabled { cursor: not-allowed; opacity: .48; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #e0a72f; outline-offset: 3px; }
+  .file-note { display: none; color: var(--danger) !important; font-weight: 700; }
+  .file-mode .file-note { display: block; }
+
+  footer { display: flex; justify-content: space-between; gap: 20px; padding: 15px 42px; border-top: 1px solid var(--rule); color: var(--muted); font: 700 9px/1.4 ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; }
+
+  @media (max-width: 900px) {
+    .sheet { width: calc(100% - 20px); margin: 10px; }
+    .masthead, main { padding-left: 24px; padding-right: 24px; }
+    .conclusion, .approval-grid { grid-template-columns: 1fr; }
+    .digests { grid-template-columns: repeat(2, 1fr); }
+    .section-head { grid-template-columns: 1fr; gap: 5px; }
+    .section-head > p { grid-column: 1; }
+    .risk-list { grid-template-columns: 1fr; }
+    .risk-list article { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .risk-list article:last-child { border-bottom: 0; }
+    .approval { margin-left: -24px; margin-right: -24px; padding-left: 24px; padding-right: 24px; }
+    footer { padding-left: 24px; padding-right: 24px; }
+    .scroll-label span:last-child { display: inline; }
+  }
+  @media (max-width: 620px) {
+    .masthead { grid-template-columns: 1fr; padding-top: 24px; }
+    .document-mark { display: none; }
+    main { padding-left: 17px; padding-right: 17px; }
+    .conclusion { gap: 22px; }
+    .disclosure { grid-template-columns: 1fr; gap: 4px; }
+    .digest-strip { grid-template-columns: 1fr; }
+    .digest-title { padding-right: 0; }
+    .digests { border-left: 0; border-top: 1px solid var(--rule); grid-template-columns: 1fr; }
+    .digests > div { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .section-head { grid-template-columns: 1fr; gap: 5px; }
+    .section-head > p { grid-column: 1; }
+    .split, .evaluation-plan { grid-template-columns: 1fr; }
+    .evaluation-plan > div, .evaluation-plan > div:nth-child(even), .evaluation-plan > div:nth-last-child(-n+2) { grid-template-columns: 1fr; border-right: 0; border-bottom: 1px solid var(--rule); }
+    .evaluation-plan > div:last-child { border-bottom: 0; }
+    .unknowns { columns: 1; }
+    .choices { grid-template-columns: 1fr; }
+    .choice, .choice:last-child { border-right: 0; border-bottom: 1px solid #b9ac8d; }
+    .choice:last-child { border-bottom: 0; }
+    .approval { margin-left: -17px; margin-right: -17px; padding-left: 17px; padding-right: 17px; }
+    .submit-line { align-items: stretch; flex-direction: column; }
+    button { width: 100%; }
+    footer { flex-direction: column; padding-left: 17px; padding-right: 17px; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+  @media print {
+    @page { size: A3 portrait; margin: 12mm; }
+    html, body { background: white; }
+    .sheet { width: 100%; margin: 0; border: 0; box-shadow: none; }
+    .masthead, main { padding-left: 0; padding-right: 0; }
+    .review-section, .conclusion, .digest-strip, .risk-list, table, .tree-frame { break-inside: avoid; }
+    .scroll-region { overflow: visible; border-color: #999; }
+    .tree-frame, table { min-width: 0; }
+    .tree-frame { zoom: .72; }
+    table { font-size: 8px; }
+    .scroll-label span:last-child, .approval form, .file-note { display: none !important; }
+    .approval { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; background: white; }
+    footer { padding-left: 0; padding-right: 0; }
+  }
+</style>
+</head>
+<body>
+<article class="sheet">
+  <header class="masthead">
+    <div>
+      <p class="kicker">Gate A · repository package proposal</p>
+      <h1>{{TITLE}}</h1>
+    </div>
+    <div class="document-mark" aria-hidden="true"><i></i><span>local review<br>structure / lineage</span></div>
+  </header>
+
+  <main>
+    <section class="conclusion" aria-labelledby="conclusion-title">
+      <div>
+        <p class="micro-label">Conclusion first</p>
+        <h2 id="conclusion-title" class="summary">{{SUMMARY}}</h2>
+        <aside class="disclosure">
+          <strong>Fixture / demo disclosure</strong>
+          <span>{{DISCLOSURE}}</span>
+        </aside>
+      </div>
+      <aside class="scope-note" aria-label="Approval scope">
+        <strong>Approval is deliberately narrow.</strong>
+        <p>Approval authorizes isolated local staging and read-only evaluation only. It authorizes <strong>no project edit, adoption, remote repository, or publication.</strong></p>
+      </aside>
+    </section>
+
+    <section class="digest-strip" aria-labelledby="digest-title">
+      <div class="digest-title">
+        <h3 id="digest-title">Digest-bound scope</h3>
+        <p>A changed byte voids this gate.</p>
+      </div>
+      <div class="digests">{{DIGESTS}}</div>
+    </section>
+
+    <section class="review-section" aria-labelledby="sources-title">
+      <header class="section-head">
+        <p class="section-number">01 / inputs</p>
+        <h2 id="sources-title">Sources and exclusions</h2>
+        <p>What was inspected, what was intentionally left out, and which bytes the proposal is allowed to interpret.</p>
+      </header>
+      <div class="split">
+        <div>
+          <p class="scroll-label" id="sources-scroll-label"><span>Detected source summary</span><span>Scroll table →</span></p>
+          <div class="scroll-region" role="region" aria-labelledby="sources-scroll-label" tabindex="0">
+            <table>
+              <thead><tr><th>Source</th><th>Kind</th><th>Disposition</th></tr></thead>
+              <tbody>{{SOURCES}}</tbody>
+            </table>
+          </div>
+        </div>
+        <aside class="note-band">
+          <h3>Capability boundary</h3>
+          <p>This review describes an information package. Syns carries and versions files; it does not infer intent, inspect whether an agent obeyed instructions, enforce process or invariants, or provide fleet visibility.</p>
+          <p>Dependency trees, caches, generated outputs, credentials, binaries, and dotenv values are excluded unless explicitly named as review subjects.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="understanding-title">
+      <header class="section-head">
+        <p class="section-number">02 / understanding</p>
+        <h2 id="understanding-title">What this person or team appears to be organizing</h2>
+        <p>A provisional work or personal-life model derived from current files, available history, repository topology, and explicit answers. Missing Git history is normal for a new personal wiki.</p>
+      </header>
+      <div class="risk-list">{{WORK_MODEL}}</div>
+      <p class="scroll-label" id="history-scroll-label" style="margin-top:18px"><span>Bounded history evidence and interpretation limits</span><span>Scroll table →</span></p>
+      <div class="scroll-region" role="region" aria-labelledby="history-scroll-label" tabindex="0">
+        <table>
+          <thead><tr><th>History evidence</th><th>Interpretation</th><th>Limit</th></tr></thead>
+          <tbody>{{HISTORY}}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="syns-repositories-title">
+      <header class="section-head">
+        <p class="section-number">03 / existing Syns</p>
+        <h2 id="syns-repositories-title">Existing repositories considered</h2>
+        <p>Accessible repository metadata shortlists candidates; representative files must be privately inspected before join, extend, derive, link, consolidate, or ignore is proposed.</p>
+      </header>
+      <p class="scroll-label" id="syns-repositories-scroll-label"><span>Reuse and authority decisions</span><span>Scroll table →</span></p>
+      <div class="scroll-region" role="region" aria-labelledby="syns-repositories-scroll-label" tabindex="0">
+        <table>
+          <thead><tr><th>Repository</th><th>Decision</th><th>Evidence-based reason</th><th>Access / authority boundary</th></tr></thead>
+          <tbody>{{SYNS_REPOSITORIES}}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="candidates-title">
+      <header class="section-head">
+        <p class="section-number">04 / shape</p>
+        <h2 id="candidates-title">Reference decisions</h2>
+        <p>Every plausible pinned reference receives an explicit selection, composition or rejection decision. Non-matches may be grouped by scope/domain; a zero-match is valid.</p>
+      </header>
+      <p class="scroll-label" id="candidate-scroll-label"><span>Reference comparison</span><span>Scroll table →</span></p>
+      <div class="scroll-region" role="region" aria-labelledby="candidate-scroll-label" tabindex="0">
+        <table>
+          <thead><tr><th>Reference</th><th>Mode</th><th>Decision</th><th>Evidence-based reason</th></tr></thead>
+          <tbody>{{CANDIDATES}}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="tree-title">
+      <header class="section-head">
+        <p class="section-number">05 / proposal</p>
+        <h2 id="tree-title">Proposed repository</h2>
+        <p>One continuous trunk traces each path left → its question and role → its origin and evidence on the right.</p>
+      </header>
+      <p class="scroll-label" id="tree-scroll-label"><span>Exact proposed paths in declared read order · semantic color indicates origin</span><span>Scroll tree →</span></p>
+      <div class="scroll-region" role="region" aria-labelledby="tree-scroll-label" tabindex="0">
+        <div class="tree-frame">
+          <div class="tree-head" aria-hidden="true"><span>Path</span><span>Question / role</span><span>Origin</span><span>Source / evidence · exact materialization</span></div>
+          <div class="repo-root"><span class="folder-mark" aria-hidden="true"></span>proposed-wiki/</div>
+          <aside class="semantic-key">
+            <strong class="sr-only">Semantic band legend</strong>
+            <span class="key-source">source-derived</span><span class="key-human">human-approved / kept</span><span class="key-inference">unresolved / inferred</span><span class="key-neutral">generated / neutral / omitted</span>
+          </aside>
+          <ul class="repo-tree">{{TREE}}</ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="mapping-title">
+      <header class="section-head">
+        <p class="section-number">06 / disposition</p>
+        <h2 id="mapping-title">Current → proposed mapping</h2>
+        <p>Every old item needs a destination or an explicit reason for omission. Silence is not a disposition.</p>
+      </header>
+      <p class="scroll-label" id="mapping-scroll-label"><span>Complete old-package ledger</span><span>Scroll table →</span></p>
+      <div class="scroll-region" role="region" aria-labelledby="mapping-scroll-label" tabindex="0">
+        <table>
+          <thead><tr><th>Current path / material</th><th>Action</th><th>Proposed path</th><th>Reason, including omissions</th></tr></thead>
+          <tbody>{{MAPPING}}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="ownership-title">
+      <header class="section-head">
+        <p class="section-number">07 / ownership</p>
+        <h2 id="ownership-title">Canonical owners and derived answers</h2>
+        <p>Each fact has one source owner. Counts, backlinks, progress and interface views name what they derive from rather than becoming a second owner.</p>
+      </header>
+      <p class="scroll-label" id="ownership-scroll-label"><span>Fact ownership</span><span>Scroll table →</span></p>
+      <div class="scroll-region" role="region" aria-labelledby="ownership-scroll-label" tabindex="0">
+        <table><thead><tr><th>Domain / fact</th><th>Canonical owner</th><th>Derived in memory / elsewhere</th></tr></thead><tbody>{{FACT_OWNERS}}</tbody></table>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="unknowns-title">
+      <header class="section-head">
+        <p class="section-number">08 / questions</p>
+        <h2 id="unknowns-title">Questions and unresolved authority</h2>
+        <p>Blank answers remain unknown. They are not filled with a convenient inference and they do not grant permission.</p>
+      </header>
+      <ul class="unknowns">{{UNKNOWNS}}</ul>
+      <h3 style="margin-top:22px">Deliberate omissions</h3>
+      <ul class="unknowns">{{OMISSIONS}}</ul>
+    </section>
+
+    <section class="review-section" aria-labelledby="validation-title">
+      <header class="section-head">
+        <p class="section-number">09 / validation</p>
+        <h2 id="validation-title">Validation before comparison</h2>
+        <p>The staged bytes must satisfy these checks before any matched read-only run begins.</p>
+      </header>
+      <p class="scroll-label" id="validation-scroll-label"><span>Checks and expected outcomes</span><span>Scroll table →</span></p>
+      <div class="scroll-region" role="region" aria-labelledby="validation-scroll-label" tabindex="0">
+        <table><thead><tr><th>Check</th><th>Expected result</th><th>Scope</th></tr></thead><tbody>{{VALIDATION}}</tbody></table>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="evaluation-title">
+      <header class="section-head">
+        <p class="section-number">10 / test</p>
+        <h2 id="evaluation-title">Evaluation plan and thresholds</h2>
+        <p>Sealed, matched and read-only. Prepared fixtures are regression evidence, not independent causal proof.</p>
+      </header>
+      <div class="evaluation-plan">{{EVALUATION_PLAN}}</div>
+      <div class="split" style="margin-top:18px">
+        <aside class="note-band blue"><h3>Matched conditions</h3><p>The current snapshot and staged proposal receive the same source bytes, model, harness, prompts, limits, read-only tools, working depth, and network policy. Hashes are checked before and after.</p></aside>
+        <aside class="note-band amber"><h3>Null means unobserved</h3><p>Timing, tokens, and tool calls appear only when the harness reports them. Missing values remain <code>null</code>; they are never inferred from answer length.</p></aside>
+      </div>
+    </section>
+
+    <section class="review-section" aria-labelledby="risks-title">
+      <header class="section-head">
+        <p class="section-number">11 / risks</p>
+        <h2 id="risks-title">Risks held at the gate</h2>
+        <p>These controls explain what approval does not settle.</p>
+      </header>
+      <div class="risk-list">
+        <article><h3>Digest drift</h3><p>Any change to source snapshot, catalog, mapping, proposal, or evaluation plan invalidates this approval and requires a new review.</p></article>
+        <article><h3>Package ≠ structure</h3><p>If the proposal adds intent, indexes, routing, or canonical content, results concern the repository package—not folders alone.</p></article>
+        <article><h3>No adoption implied</h3><p>A better read-only result still authorizes nothing. Local adoption, a project adapter, and private publication remain separate later controls.</p></article>
+      </div>
+    </section>
+
+    <section class="approval" aria-labelledby="approval-title">
+      <div class="approval-grid">
+        <div class="approval-copy">
+          <p class="micro-label">Decision · Gate A</p>
+          <h2 id="approval-title">Authorize the next safe step?</h2>
+          <p><strong>Only</strong> the exact digest-bound proposal may be materialized in an isolated private local stage and compared through read-only agents.</p>
+          <p>No selection is prefilled. Blank submission means no approval. Comments cannot substitute for a selected decision.</p>
+          <p class="file-note" id="file-note">Read-only file preview: decisions can be submitted only from the local review server.</p>
+        </div>
+        <form method="post" action="{{FORM_ACTION}}" aria-describedby="approval-title file-note" id="decision-form">
+          <input type="hidden" name="token" value="{{REVIEW_TOKEN}}">
+          <fieldset>
+            <legend>Required decision</legend>
+            <div class="choices">
+              <div class="choice">
+                <input required type="radio" name="decision" id="approve" value="approved_for_staging_evaluation">
+                <label for="approve">Approve staging + evaluation<span>Isolated local stage and read-only comparison only.</span></label>
+              </div>
+              <div class="choice">
+                <input required type="radio" name="decision" id="changes" value="request_changes">
+                <label for="changes">Request changes<span>Return the proposal for a new digest-bound review.</span></label>
+              </div>
+              <div class="choice">
+                <input required type="radio" name="decision" id="reject" value="reject">
+                <label for="reject">Reject<span>Do not stage or evaluate this proposal.</span></label>
+              </div>
+            </div>
+          </fieldset>
+          <label for="comments">Review comments</label>
+          <textarea id="comments" name="comments" placeholder="Required changes, unresolved authority, or reason for the decision."></textarea>
+          <div class="submit-line">
+            <p>Submission records the selected value and bound digests. It performs no filesystem or remote operation.</p>
+            <button type="submit" id="submit-decision">Record decision</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Local-first review artifact · no remote assets</span><span>Gate A · proposal → isolated evaluation</span></footer>
+</article>
+<script>
+(function () {
+  "use strict";
+  if (window.location.protocol === "file:") {
+    document.documentElement.classList.add("file-mode");
+    var button = document.getElementById("submit-decision");
+    if (button) button.disabled = true;
+  }
+  var form = document.getElementById("decision-form");
+  if (form) {
+    form.addEventListener("submit", function (event) {
+      if (window.location.protocol === "file:") event.preventDefault();
+    });
+  }
+}());
+</script>
+</body>
+</html>

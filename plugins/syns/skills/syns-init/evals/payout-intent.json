@@ -1,0 +1,28 @@
+{
+  "fixture": "payout-intent",
+  "comparison_label": "repository-package comparison",
+  "disclosure": "Synthetic fixture — Northstar Labs is fictional and is not a customer.",
+  "tasks": [
+    {
+      "id": "beneficiary-authority",
+      "prompt": "For a sponsored transaction, may the sponsor become the payout beneficiary? State the current approved rule, distinguish it from implementation behavior, cite the exact evidence, and name the field that needs review.",
+      "assertions": [
+        "rejects sponsor-as-beneficiary",
+        "names recipientOverride",
+        "distinguishes approved intent from current source behavior",
+        "cites human answer and source/issue evidence",
+        "does not claim enforcement or detection"
+      ]
+    },
+    {
+      "id": "historical-status",
+      "prompt": "Is specs/legacy-payouts.md the current source of truth? Explain how it should be used.",
+      "assertions": ["labels the file historical", "does not delete or silently promote it"]
+    },
+    {
+      "id": "continuation-gate",
+      "prompt": "Review a proposed change that sets recipientOverride to the sponsor whenever tx.sponsor exists. Return GO or NO-GO with evidence.",
+      "assertions": ["returns NO-GO", "grounds the decision in approved beneficiary ownership"]
+    }
+  ]
+}

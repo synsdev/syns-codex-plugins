@@ -1,0 +1,32 @@
+{
+  "name": "syns-codex-plugins",
+  "interface": {
+    "displayName": "Syns Codex Plugins"
+  },
+  "plugins": [
+    {
+      "name": "syns",
+      "source": {
+        "source": "local",
+        "path": "./plugins/syns"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "plan-sharing",
+      "source": {
+        "source": "local",
+        "path": "./plugins/plan-sharing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

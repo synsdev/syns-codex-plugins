@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>{{TITLE}} — evaluation review</title>
+<style>
+  :root {
+    --paper: #eee9de;
+    --sheet: #fbfaf5;
+    --ink: #202521;
+    --muted: #606964;
+    --rule: #c5c7bf;
+    --blue: #285f82;
+    --blue-wash: #eaf2f6;
+    --green: #316b54;
+    --green-wash: #e9f2ec;
+    --amber: #825f1c;
+    --amber-wash: #f6efdf;
+    --slate: #59646d;
+    --slate-wash: #edf0ee;
+    --danger: #843d34;
+    --danger-wash: #f5e8e4;
+  }
+  * { box-sizing: border-box; }
+  html { min-width: 320px; background: var(--paper); }
+  body { margin: 0; color: var(--ink); background: var(--paper); font-family: Georgia, "Times New Roman", serif; line-height: 1.48; -webkit-font-smoothing: antialiased; }
+  code, pre, table, input, select, textarea, button, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+  p, ul { margin-top: 0; }
+  .sheet { width: min(1440px, calc(100% - 40px)); margin: 20px auto 42px; background: var(--sheet); border: 1px solid #d0cfc7; box-shadow: 0 16px 44px rgba(31, 39, 34, .09); }
+  .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 30px; align-items: end; padding: 30px 42px 27px; border-bottom: 2px solid var(--ink); }
+  .kicker, .section-no, .label { margin: 0 0 9px; color: var(--blue); font: 800 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .15em; text-transform: uppercase; }
+  h1 { max-width: 950px; margin: 0; font-size: clamp(31px, 4.4vw, 58px); line-height: .98; letter-spacing: -.045em; font-weight: 600; }
+  .folio { color: var(--muted); text-align: right; font: 800 9px/1.55 ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; }
+  main { padding: 0 42px 42px; }
+
+  .protocol-lead { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); gap: 34px; padding: 30px 0 31px; border-bottom: 1px solid var(--rule); }
+  .protocol-lead > * { min-width: 0; }
+  .lead-copy { margin: 0; max-width: 800px; font-size: clamp(20px, 2.15vw, 30px); line-height: 1.25; letter-spacing: -.017em; }
+  .protocol-box { min-width: 0; border: 1px solid #aeb1aa; border-left: 4px solid var(--green); background: var(--green-wash); }
+  .protocol-box > * { margin: 0; padding: 12px 15px; border-bottom: 1px solid rgba(56, 100, 79, .22); }
+  .protocol-box > *:last-child { border-bottom: 0; }
+  .protocol-box strong { display: block; margin-bottom: 4px; color: var(--green); overflow-wrap: anywhere; font: 800 10px/1.3 ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; }
+  .protocol-box span, .protocol-box p { font-size: 12px; }
+  .disclosure { margin-top: 18px; padding: 11px 14px; border-left: 3px solid var(--amber); background: var(--amber-wash); color: #5d4920; font-size: 13px; }
+
+  .stage-index { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--rule); }
+  .stage-index a { display: grid; grid-template-columns: 32px 1fr; gap: 9px; padding: 14px 16px; border-right: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
+  .stage-index a:last-child { border-right: 0; }
+  .stage-index b { color: var(--blue); font: 800 11px/1.2 ui-monospace, monospace; }
+  .stage-index strong { display: block; font-size: 15px; line-height: 1.1; }
+  .stage-index small { display: block; margin-top: 3px; color: var(--muted); font: 700 9px/1.3 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .07em; }
+  .stage-index a:hover { background: var(--blue-wash); }
+
+  .review-section { padding: 31px 0 33px; border-bottom: 1px solid var(--rule); }
+  .section-head { display: grid; grid-template-columns: 82px minmax(0, 1fr) minmax(220px, 430px); gap: 18px; align-items: start; margin-bottom: 18px; }
+  .section-no { padding-top: 5px; color: var(--muted); }
+  h2 { margin: 0; font-size: clamp(23px, 2.6vw, 34px); line-height: 1.04; letter-spacing: -.028em; font-weight: 600; }
+  .section-head p:last-child { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+  h3 { margin: 0 0 9px; font: 800 11px/1.3 ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; }
+  .boundary { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px; }
+  .note { padding: 14px 16px; border-left: 3px solid var(--slate); background: var(--slate-wash); font-size: 13px; }
+  .note.amber { border-color: var(--amber); background: var(--amber-wash); }
+  .note p:last-child { margin-bottom: 0; }
+
+  .blind-rail { position: relative; }
+  .blind-rail::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px solid var(--rule); pointer-events: none; }
+  .pair {
+    margin-bottom: 25px;
+    border: 1px solid var(--rule);
+    background: #f8f7f2;
+    break-inside: avoid;
+  }
+  .pair:last-child { margin-bottom: 0; }
+  .pair-head { display: grid; grid-template-columns: 100px minmax(0, 1fr); border-bottom: 2px solid var(--ink); }
+  .pair-head b { padding: 13px; border-right: 1px solid var(--rule); color: var(--blue); font: 800 10px/1.3 ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; }
+  .pair-head > div { padding: 12px 15px; }
+  .pair-head h3 { margin-bottom: 4px; }
+  .pair-head p { margin: 0; font-size: 13px; }
+  .answers { display: grid; grid-template-columns: 1fr 1fr; position: relative; }
+  .answer { min-width: 0; padding: 17px; }
+  .answer:first-child { border-right: 1px solid var(--rule); }
+  .answer-title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .answer-title span { display: grid; place-items: center; width: 27px; height: 27px; border: 2px solid var(--blue); color: var(--blue); font: 900 13px/1 ui-monospace, monospace; }
+  .answer-title h3 { margin: 0; }
+  .answer-body { min-height: 140px; font-size: 13px; }
+  .answer-body pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; line-height: 1.5; }
+  .evidence { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 11px; }
+  .evidence .label { margin-bottom: 5px; color: var(--slate); }
+  .pair-form { display: grid; grid-template-columns: minmax(360px, 1.15fr) minmax(330px, .85fr); gap: 20px; padding: 16px; border-top: 1px solid var(--rule); background: var(--sheet); }
+  fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+  legend { margin-bottom: 9px; font: 800 10px/1.3 ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; }
+  .winner-options { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid #aeb1aa; }
+  .winner-options label { position: relative; display: flex; align-items: center; gap: 7px; min-height: 45px; padding: 8px; border-right: 1px solid #aeb1aa; cursor: pointer; font: 800 10px/1.25 ui-monospace, monospace; }
+  .winner-options label:last-child { border-right: 0; }
+  .winner-options label:has(input:checked) { box-shadow: inset 0 0 0 2px var(--blue); background: var(--blue-wash); }
+  input[type="radio"], input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--blue); }
+  .rubric { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 13px; }
+  .rubric label, .control-stack label { color: var(--muted); font: 700 9px/1.3 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .04em; }
+  select, input[type="number"], textarea {
+    width: 100%; margin-top: 5px; border: 1px solid #a5a79f; border-radius: 0; background: white; color: var(--ink); font-size: 11px;
+  }
+  select, input[type="number"] { min-height: 38px; padding: 7px; }
+  textarea { min-height: 72px; padding: 9px; resize: vertical; line-height: 1.4; }
+  .control-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 12px; }
+  .control-stack .wide { grid-column: 1 / -1; }
+  .checkline { display: flex; align-items: center; gap: 8px; min-height: 38px; padding: 6px 8px; border: 1px solid #a5a79f; background: white; color: var(--ink) !important; }
+
+  .reveal-wrap > * { margin-bottom: 18px; }
+  .reveal-wrap > *:last-child { margin-bottom: 0; }
+  .condition-key { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--rule); }
+  .condition-key article { padding: 16px; border-right: 1px solid var(--rule); }
+  .condition-key article:last-child { border-right: 0; }
+  .condition-key b { display: inline-grid; place-items: center; width: 27px; height: 27px; margin-right: 8px; border: 2px solid var(--green); color: var(--green); font: 900 13px/1 ui-monospace, monospace; }
+  .condition-key p { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+  .scroll-region { max-width: 100%; overflow-x: auto; border: 1px solid var(--rule); }
+  .scroll-label { display: flex; justify-content: space-between; gap: 20px; margin: 0 0 7px; color: var(--muted); font: 800 9px/1.3 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+  .scroll-label span:last-child { display: none; }
+  table { width: 100%; min-width: 820px; border-collapse: collapse; font-size: 11px; line-height: 1.4; }
+  th { padding: 9px 11px; border-bottom: 2px solid var(--ink); background: #f2f0e9; color: var(--muted); text-align: left; font-size: 9px; text-transform: uppercase; letter-spacing: .09em; }
+  td { padding: 10px 11px; border-bottom: 1px solid #deded7; vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  .empty-timing { display: inline-block; padding: 3px 6px; border: 1px solid var(--rule); background: var(--slate-wash); color: var(--slate); font: 800 9px/1.2 ui-monospace, monospace; text-transform: uppercase; }
+  .coverage-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--rule); }
+  .coverage-grid article { padding: 15px; border-right: 1px solid var(--rule); }
+  .coverage-grid article:last-child { border-right: 0; }
+  .coverage-grid strong { display: block; color: var(--blue); font: 800 10px/1.3 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .07em; }
+  .coverage-grid p { margin: 5px 0 0; overflow-wrap: anywhere; font-size: 13px; color: var(--muted); }
+
+  .operation-manifest { margin: 18px 0; border: 1px solid var(--rule); }
+  .operation-manifest pre { margin: 0; padding: 14px; white-space: pre-wrap; overflow-wrap: anywhere; background: #f3f2ec; font-size: 10px; line-height: 1.5; }
+  .manifest-list { margin: 0; padding: 10px 14px 10px 34px; background: #f3f2ec; font: 10px/1.5 ui-monospace, monospace; }
+  .manifest-list li { padding: 4px 0; }
+  .manifest-list small { display: block; color: var(--muted); }
+  .decision-zone { margin: 34px -42px -42px; padding: 29px 42px 34px; border-top: 3px solid var(--amber); background: #f5eedf; }
+  .decision-grid { display: grid; grid-template-columns: minmax(260px, .68fr) minmax(0, 1.32fr); gap: 38px; }
+  .decision-copy { font-size: 14px; }
+  .decision-copy strong { color: var(--amber); }
+  .decision-options { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #b9ac8d; background: var(--sheet); }
+  .decision-options label { display: flex; align-items: flex-start; gap: 9px; min-height: 62px; padding: 11px; border-right: 1px solid #b9ac8d; border-bottom: 1px solid #b9ac8d; cursor: pointer; font: 800 10px/1.35 ui-monospace, monospace; }
+  .decision-options label:nth-child(even) { border-right: 0; }
+  .decision-options label:nth-last-child(-n+2) { border-bottom: 0; }
+  .decision-options label:has(input:checked) { background: var(--amber-wash); box-shadow: inset 0 0 0 2px var(--amber); }
+  .decision-options span { display: block; margin-top: 3px; color: var(--muted); font: 400 10px/1.3 Georgia, serif; }
+  .adoption-controls { margin-top: 17px; padding: 14px; border: 1px solid #b9ac8d; background: var(--sheet); }
+  .adoption-controls > p { margin-bottom: 11px; color: var(--muted); font-size: 12px; }
+  .approval-checks { display: grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--rule); }
+  .approval-checks label { display: flex; gap: 9px; align-items: flex-start; min-height: 84px; padding: 12px; border-right: 1px solid var(--rule); cursor: pointer; font: 800 10px/1.35 ui-monospace, monospace; }
+  .approval-checks label:last-child { border-right: 0; }
+  .approval-checks label:has(input:checked) { background: var(--green-wash); box-shadow: inset 0 0 0 2px var(--green); }
+  .approval-checks span { display: block; margin-top: 4px; color: var(--muted); font: 400 10px/1.35 Georgia, serif; }
+  .comments-label { display: block; margin-top: 14px; font: 800 10px/1.3 ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; }
+  .submit-line { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-top: 12px; }
+  .submit-line p { margin: 0; max-width: 680px; color: var(--muted); font-size: 11px; }
+  button { flex: 0 0 auto; min-height: 44px; padding: 0 18px; border: 2px solid var(--ink); border-radius: 0; background: var(--ink); color: var(--sheet); cursor: pointer; font: 800 11px/1 ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; }
+  button:hover { border-color: var(--amber); background: var(--amber); }
+  button:disabled { cursor: not-allowed; opacity: .48; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 3px solid #dda328; outline-offset: 3px; }
+  .file-note { display: none; color: var(--danger); font-weight: 700; }
+  .file-mode .file-note { display: block; }
+  footer { display: flex; justify-content: space-between; gap: 20px; padding: 15px 42px; border-top: 1px solid var(--rule); color: var(--muted); font: 700 9px/1.4 ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; }
+
+  @media (max-width: 960px) {
+    .sheet { width: calc(100% - 20px); margin: 10px; }
+    .masthead, main { padding-left: 24px; padding-right: 24px; }
+    .protocol-lead, .decision-grid { grid-template-columns: 1fr; }
+    .section-head { grid-template-columns: 52px 1fr; }
+    .section-head p:last-child { grid-column: 2; }
+    .pair-form { grid-template-columns: 1fr; }
+    .rubric { grid-template-columns: repeat(3, 1fr); }
+    .decision-zone { margin-left: -24px; margin-right: -24px; padding-left: 24px; padding-right: 24px; }
+    .scroll-label span:last-child { display: inline; }
+    footer { padding-left: 24px; padding-right: 24px; }
+  }
+  @media (max-width: 700px) {
+    .masthead { grid-template-columns: 1fr; padding-top: 24px; }
+    .folio { display: none; }
+    main { padding-left: 17px; padding-right: 17px; }
+    .stage-index { grid-template-columns: 1fr; }
+    .stage-index a, .stage-index a:last-child { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .stage-index a:last-child { border-bottom: 0; }
+    .section-head { grid-template-columns: 1fr; gap: 5px; }
+    .section-head p:last-child { grid-column: 1; }
+    .boundary, .condition-key { grid-template-columns: 1fr; }
+    .condition-key article { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .condition-key article:last-child { border-bottom: 0; }
+    .answers { grid-template-columns: 1fr; }
+    .answer:first-child { border-right: 0; border-bottom: 3px double var(--ink); }
+    .blind-rail::before { display: none; }
+    .winner-options { grid-template-columns: 1fr 1fr; }
+    .winner-options label:nth-child(2) { border-right: 0; }
+    .winner-options label:nth-child(-n+2) { border-bottom: 1px solid #aeb1aa; }
+    .rubric, .coverage-grid, .approval-checks { grid-template-columns: 1fr; }
+    .coverage-grid article, .approval-checks label { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .coverage-grid article:last-child, .approval-checks label:last-child { border-bottom: 0; }
+    .decision-options { grid-template-columns: 1fr; }
+    .decision-options label, .decision-options label:nth-child(even), .decision-options label:nth-last-child(-n+2) { border-right: 0; border-bottom: 1px solid #b9ac8d; }
+    .decision-options label:last-child { border-bottom: 0; }
+    .decision-zone { margin-left: -17px; margin-right: -17px; padding-left: 17px; padding-right: 17px; }
+    .submit-line { flex-direction: column; align-items: stretch; }
+    button { width: 100%; }
+    footer { flex-direction: column; padding-left: 17px; padding-right: 17px; }
+  }
+  @media (max-width: 430px) {
+    .pair-head { grid-template-columns: 1fr; }
+    .pair-head b { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .control-stack, .rubric { grid-template-columns: 1fr 1fr; }
+    .winner-options { grid-template-columns: 1fr; }
+    .winner-options label, .winner-options label:nth-child(2) { border-right: 0; border-bottom: 1px solid #aeb1aa; }
+    .winner-options label:last-child { border-bottom: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+  @media print {
+    @page { size: A3 portrait; margin: 12mm; }
+    html, body { background: white; }
+    .sheet { width: 100%; margin: 0; border: 0; box-shadow: none; }
+    .masthead, main { padding-left: 0; padding-right: 0; }
+    .pair, .protocol-lead, .condition-key, .coverage-grid, .operation-manifest { break-inside: avoid; }
+    .scroll-region { overflow: visible; }
+    table { min-width: 0; font-size: 8px; }
+    .stage-index, .pair-form, .decision-zone form, .file-note, .scroll-label span:last-child { display: none !important; }
+    .answer-body pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .decision-zone { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; background: white; }
+    footer { padding-left: 0; padding-right: 0; }
+  }
+</style>
+</head>
+<body>
+<article class="sheet">
+  <header class="masthead">
+    <div><p class="kicker">Gate B · matched read-only comparison</p><h1>{{TITLE}}</h1></div>
+    <div class="folio">protocol / blind review / reveal<br>exact operation approval</div>
+  </header>
+
+  <main>
+    <section class="protocol-lead" aria-labelledby="protocol-title">
+      <div>
+        <p class="label">Protocol and coverage</p>
+        <h2 id="protocol-title" class="lead-copy">Judge paired answers before learning which repository package produced them.</h2>
+        <div class="disclosure">{{DISCLOSURE}}</div>
+      </div>
+      <div class="protocol-box">{{PROTOCOL}}</div>
+    </section>
+
+    <nav class="stage-index" aria-label="Evaluation review sections">
+      <a href="#blind"><b>01</b><span><strong>Blind scoring</strong><small>paired answers · identity hidden</small></span></a>
+      <a href="#reveal"><b>02</b><span><strong>Reveal</strong><small>quality · checks · coverage</small></span></a>
+      <a href="#decision"><b>03</b><span><strong>Decision + controls</strong><small>exact operations · independently approved</small></span></a>
+    </nav>
+
+    <section class="review-section" id="blind" aria-labelledby="blind-title">
+      <header class="section-head">
+        <p class="section-no">01 / blind</p>
+        <h2 id="blind-title">Blind paired-answer scoring</h2>
+        <p>No condition identity, real path, timing, deterministic grade, or aggregate result belongs in this section.</p>
+      </header>
+      <div class="boundary">
+        <aside class="note"><h3>What you can use</h3><p>The sealed task prompt, Answer A/B, aliased citations and evidence, and the rubric below.</p></aside>
+        <aside class="note amber"><h3>Leakage check</h3><p>Flag any wording, citation, or answer detail that appears to reveal a condition. Mark the pair unscorable when blindness is materially broken.</p></aside>
+      </div>
+      <div class="blind-rail">{{BLIND_PAIRS}}</div>
+    </section>
+
+    <section class="review-section" id="reveal" aria-labelledby="reveal-title">
+      <header class="section-head">
+        <p class="section-no">02 / reveal</p>
+        <h2 id="reveal-title">Condition reveal and evidence</h2>
+        <p>Interpret human ratings beside deterministic checks, critical errors, task/category outcomes, protocol caveats, and observed—not inferred—timing.</p>
+      </header>
+      <div class="reveal-wrap">{{REVEAL}}</div>
+      <section class="coverage-grid" aria-label="Required interpretation boundaries" style="margin-top:18px">
+        <article><strong>Quality stays separate</strong><p>Accuracy, completeness, grounding, uncertainty handling, and usability are compared without blending speed into one score.</p></article>
+        <article><strong>Empty timing</strong><p><span class="empty-timing">null · not observed</span> is the correct display whenever the harness did not genuinely report duration.</p></article>
+        <article><strong>Capability boundary</strong><p>This matched run compares answer behavior. It does not prove process enforcement, universal superiority, or what an agent will do in future contexts.</p></article>
+      </section>
+    </section>
+
+    <section class="decision-zone" id="decision" aria-labelledby="decision-title">
+      <div class="decision-grid">
+        <div class="decision-copy">
+          <p class="label">03 / decision</p>
+          <h2 id="decision-title">Decision, then exact controls</h2>
+          <p>The evaluation decision itself changes nothing. <strong>Blank means no approval.</strong> Adoption controls are independent, unchecked by default, and bound to the stage and exact operation manifest.</p>
+          <p>There is intentionally no public-publication control.</p>
+          <p class="file-note" id="file-note">Read-only file preview: decisions can be submitted only from the local review server.</p>
+        </div>
+        <form method="post" action="{{FORM_ACTION}}" id="evaluation-form" aria-describedby="decision-title file-note">
+          <input type="hidden" name="token" value="{{REVIEW_TOKEN}}">
+          <fieldset>
+            <legend>Required evaluation decision</legend>
+            <div class="decision-options">
+              <label><input required type="radio" name="decision" value="proceed_to_limited_pilot"><span><b>Proceed to limited pilot</b><span>Evidence meets the declared threshold for a bounded adoption test.</span></span></label>
+              <label><input required type="radio" name="decision" value="revise_and_rerun"><span><b>Revise and rerun</b><span>Change the package or protocol, reseal digests, and compare again.</span></span></label>
+              <label><input required type="radio" name="decision" value="retain_current_structure"><span><b>Retain current structure</b><span>Do not adopt this staged repository package.</span></span></label>
+              <label><input required type="radio" name="decision" value="evidence_inconclusive"><span><b>Evidence inconclusive</b><span>Missing or mixed evidence does not count as a current-package win.</span></span></label>
+            </div>
+          </fieldset>
+
+          <section class="operation-manifest" aria-labelledby="manifest-title">
+            <h3 id="manifest-title" style="padding:12px 14px;margin:0;border-bottom:1px solid var(--rule)">Exact operation manifest · digest bound</h3>
+            <div>{{OPERATION_MANIFEST}}</div>
+          </section>
+
+          <fieldset class="adoption-controls">
+            <legend>Independent operation approvals · all default unchecked</legend>
+            <p>Check only operations you authorize. A checked operation is ignored unless the limited-pilot decision is selected and the approval record matches the stage and operation digests.</p>
+            <div class="approval-checks">
+              <label><input type="checkbox" name="approve_local_adoption" value="approved"><span><b>Local adoption</b><span>Place the accepted wiki in the exact local destination declared above; preserve current files unless the manifest explicitly says otherwise.</span></span></label>
+              <label><input type="checkbox" name="approve_project_adapter" value="approved"><span><b>Project adapter</b><span>Apply only the marker-delimited, removable project instruction edit shown in the operation manifest.</span></span></label>
+              <label><input type="checkbox" name="approve_private_publication" value="approved"><span><b>Private publication</b><span>Create or push only the named private Syns repository after authentication and exact local validation.</span></span></label>
+              <label><input type="checkbox" name="approve_direct_collaborators" value="approved"><span><b>Direct collaborators</b><span>Add only the named users/emails with the exact read, write, or admin roles shown in the operation manifest.</span></span></label>
+              <label><input type="checkbox" name="approve_team_handoff" value="approved"><span><b>Team handoff</b><span>Create/select only the named team, invite the listed emails, and grant the exact repository role shown above. Invitations may remain pending.</span></span></label>
+            </div>
+          </fieldset>
+
+          <label class="comments-label" for="decision-comments">Decision comments</label>
+          <textarea id="decision-comments" name="comments" placeholder="Caveats, required revisions, pilot limits, or why evidence is inconclusive."></textarea>
+          <div class="submit-line">
+            <p>Submitting records choices; it does not itself perform an operation. Local adoption, project adapter, and private publication remain separable and reversible where the manifest specifies.</p>
+            <button id="submit-decision" type="submit">Record decision</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Local-first review artifact · no remote assets</span><span>Matched comparison · blind → reveal → exact controls</span></footer>
+</article>
+<script>
+(function () {
+  "use strict";
+  if (window.location.protocol === "file:") {
+    document.documentElement.classList.add("file-mode");
+    var button = document.getElementById("submit-decision");
+    if (button) button.disabled = true;
+  }
+  var form = document.getElementById("evaluation-form");
+  if (form) {
+    form.addEventListener("submit", function (event) {
+      if (window.location.protocol === "file:") event.preventDefault();
+      var decision = form.querySelector('input[name="decision"]:checked');
+      if (!decision || decision.value !== "proceed_to_limited_pilot") {
+        form.querySelectorAll('.adoption-controls input[type="checkbox"]').forEach(function (input) { input.checked = false; });
+      }
+    });
+  }
+}());
+</script>
+</body>
+</html>

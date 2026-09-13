@@ -1,0 +1,37 @@
+{
+  "name": "syns",
+  "version": "0.2.1",
+  "description": "Auto-pull on Codex session start, auto-push on every turn-stop, and syns-init to build or join an agent-readable repository.",
+  "author": {
+    "name": "Bartosz Sojka",
+    "email": "bartsoj@gmail.com",
+    "url": "https://syns.dev"
+  },
+  "homepage": "https://syns.dev",
+  "repository": "https://github.com/synsdev/syns-codex-plugins",
+  "license": "MIT",
+  "keywords": [
+    "syns",
+    "version-control",
+    "multi-agent",
+    "automation",
+    "hooks",
+    "auto-commit",
+    "setup"
+  ],
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Syns",
+    "shortDescription": "Build or join a Syns repository; pull on start, push on Stop.",
+    "longDescription": "Includes the syns-init skill for digest-bound local proposal and evaluation before adoption, plus lifecycle hooks that pull a joined Syns repository on startup/resume and push on every turn-stop. Bundled hooks require trust.",
+    "developerName": "Syns",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Skills"
+    ],
+    "websiteURL": "https://syns.dev",
+    "brandColor": "#5e6ad2"
+  }
+}

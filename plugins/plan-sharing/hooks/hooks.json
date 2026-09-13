@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 30,
+            "statusMessage": "Syns: checking plan overlap",
+            "command": "\"${PLUGIN_ROOT}\"/scripts/coordinate-plan.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

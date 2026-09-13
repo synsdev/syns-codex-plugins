@@ -1,0 +1,5 @@
+{
+  "question_id": "Q-001",
+  "answer": "The original transaction recipient remains the beneficiary. A sponsor may pay execution cost but must not become payout owner. recipientOverride is valid only when explicitly approved by the beneficiary.",
+  "answered_at": "2026-09-01T10:00:00Z"
+}

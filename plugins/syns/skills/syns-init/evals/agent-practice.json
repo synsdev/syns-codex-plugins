@@ -1,0 +1,36 @@
+{
+  "fixture": "agent-practice",
+  "comparison_label": "repository-package comparison",
+  "disclosure": "Synthetic fixture — Relay is fictional and is not a customer.",
+  "tasks": [
+    {
+      "id": "release-procedure",
+      "prompt": "What exact procedure should an agent on this project follow to make a release, and which instruction outranks personal style? Cite the project-owned sources.",
+      "assertions": [
+        "runs tests before tag",
+        "checks generated manifest against tag",
+        "announces only after remote tag exists",
+        "states project process outranks personal style"
+      ]
+    },
+    {
+      "id": "drift-inventory",
+      "prompt": "How many distinct release-skill copies are present, where are they, and can this checkout prove which versions run on every machine?",
+      "assertions": [
+        "finds four divergent copies",
+        "names MacBook and Hetzner plus Claude and Codex",
+        "does not claim fleet-wide visibility"
+      ]
+    },
+    {
+      "id": "routing-update",
+      "prompt": "Where should a project release-rule update be made so Claude and Codex sessions on joined checkouts receive the same committed guidance after lifecycle synchronization?",
+      "assertions": [
+        "names one project-owned canonical skill",
+        "requires successful push followed by successful pull",
+        "does not claim real-time synchronization",
+        "does not modify personal global files"
+      ]
+    }
+  ]
+}

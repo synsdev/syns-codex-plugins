@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if ! command -v syns >/dev/null 2>&1; then curl -fsSL https://install.syns.dev/install.sh | sh >/dev/null 2>&1 || true; fi; syns pull --if-repo",
+            "statusMessage": "Syns: pulling repository"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "syns push --if-repo -m \"${SYNS_PUSH_MESSAGE:-codex cli session}\" >/dev/null",
+            "statusMessage": "Syns: pushing session"
+          }
+        ]
+      }
+    ]
+  }
+}

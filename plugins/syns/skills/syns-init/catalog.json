@@ -1,0 +1,122 @@
+{
+  "version": 2,
+  "references": [
+    {
+      "id": "ticks",
+      "repository": "bartsoj/ticks-engineering-work",
+      "commit": "000dfbef291d50cde86aa942697909352f3dfd05",
+      "mode": "shape-only",
+      "scope": "team",
+      "domain": "engineering-work",
+      "for": ["engineering work", "dependencies", "waiting", "review"]
+    },
+    {
+      "id": "linear",
+      "repository": "bartsoj/linear-engineering-work",
+      "commit": "e54bb495634698f6485a8e884277cf855552d070",
+      "mode": "shape-only",
+      "scope": "team",
+      "domain": "engineering-work",
+      "for": ["issues", "projects", "initiatives", "milestones", "cycles", "updates", "documents"]
+    },
+    {
+      "id": "notion",
+      "repository": "bartsoj/notion-workspace",
+      "commit": "b18f2ed4ebacabe5e5671113d75667a70f9e196e",
+      "mode": "shape-only",
+      "scope": "team",
+      "domain": "workspace",
+      "for": ["pages", "databases", "relations", "templates", "views"]
+    },
+    {
+      "id": "attio",
+      "repository": "bartsoj/attio-crm",
+      "commit": "e27bd7325d852bbb3d221db556052e8973176ed5",
+      "mode": "shape-only",
+      "scope": "team",
+      "domain": "relationship-crm",
+      "for": ["companies", "people", "deals", "relationships", "lists", "entries"]
+    },
+    {
+      "id": "spec-kit",
+      "repository": "bartsoj/spec-kit-feature-specs",
+      "commit": "b3ffce8761fade4ac2cf6dca4e79ac0e8f29ed72",
+      "mode": "native-transport",
+      "scope": "development",
+      "domain": "specifications",
+      "for": ["constitution", "feature packets", "requirements", "plans", "tasks"]
+    },
+    {
+      "id": "openspec",
+      "repository": "bartsoj/openspec-codebase-specs",
+      "commit": "386589ffba465d721124fce1205043ac222b0227",
+      "mode": "native-transport",
+      "scope": "development",
+      "domain": "specifications",
+      "for": ["current capabilities", "proposed deltas", "change tasks", "archives"]
+    },
+    {
+      "id": "personal-notes",
+      "repository": "bartsoj/personal-notes",
+      "commit": "f7566f04ae91e9db79952cd5aad4ae000364d6fe",
+      "mode": "category-native-starter",
+      "scope": "personal",
+      "domain": "notes-knowledge",
+      "for": ["free-form notes", "collections", "tags", "links", "attachments", "daily notes", "clippings"]
+    },
+    {
+      "id": "personal-tasks-goals",
+      "repository": "bartsoj/personal-tasks-goals",
+      "commit": "7e8b450ce9d831a42f161a42a42ff1981cf33a2c",
+      "mode": "category-native-starter",
+      "scope": "personal",
+      "domain": "tasks-goals",
+      "for": ["inbox", "tasks", "projects", "areas", "goals", "recurrences", "reviews"]
+    },
+    {
+      "id": "personal-exercise",
+      "repository": "bartsoj/personal-exercise",
+      "commit": "97f5016fd112007415fddf3a02f81a368543ec62",
+      "mode": "category-native-starter",
+      "scope": "personal",
+      "domain": "exercise-training",
+      "for": ["exercises", "programs", "workouts", "planned sessions", "performed sessions", "progress", "adjustments"]
+    },
+    {
+      "id": "personal-habits-routines",
+      "repository": "bartsoj/personal-habits-routines",
+      "commit": "467fcf8eb67d13413a38e1e610e33ca9923b2b41",
+      "mode": "category-native-starter",
+      "scope": "personal",
+      "domain": "habits-routines",
+      "for": ["habit definitions", "routines", "ordered steps", "check-ins", "schedule revisions", "experiments", "reviews"]
+    },
+    {
+      "id": "personal-food-nutrition",
+      "repository": "bartsoj/personal-food-nutrition",
+      "commit": "0363e22839bbc48f223d448cbc44eb8c5a0959d4",
+      "mode": "category-native-starter",
+      "scope": "personal",
+      "domain": "food-nutrition",
+      "for": ["foods", "recipes", "saved meals", "food diary", "nutrient snapshots", "targets", "reviews"]
+    },
+    {
+      "id": "personal-travel",
+      "repository": "bartsoj/personal-travel",
+      "commit": "1541897cd3fe854844af3069f7db98f78c3c409b",
+      "mode": "category-native-starter",
+      "scope": "personal",
+      "domain": "travel",
+      "for": ["trips", "places", "itineraries", "reservations", "decisions", "checklists", "expenses", "memories"]
+    },
+    {
+      "id": "personal-people",
+      "repository": "bartsoj/personal-people",
+      "commit": "2a618c7682763deb6f58482b867bed0c0690bd08",
+      "mode": "category-native-starter",
+      "scope": "personal",
+      "domain": "people-relationships",
+      "for": ["contacts", "relationships", "groups", "interactions", "important dates", "commitments", "follow-up"]
+    }
+  ]
+}
