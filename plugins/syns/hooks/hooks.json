@@ -6,7 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if ! command -v syns >/dev/null 2>&1; then curl -fsSL https://install.syns.dev/install.sh | sh >/dev/null 2>&1 || true; fi; syns pull --if-repo",
+            "timeout": 600,
+            "command": "command -v syns >/dev/null 2>&1 || curl -fsSL https://install.syns.dev/install.sh | sh >/dev/null 2>&1; command -v syns >/dev/null 2>&1 || exit 0; s=$(sed -n 's/.*\"session_id\" *: *\"\\([^\"]*\\)\".*/\\1/p'); [ -n \"$SYNS_INTEGRATION\" ] || SYNS_INTEGRATION=codex; [ -n \"$SYNS_RUN\" ] || SYNS_RUN=$s; [ -n \"$SYNS_TRIGGER\" ] || SYNS_TRIGGER=start; export SYNS_INTEGRATION SYNS_RUN SYNS_TRIGGER; o=$(syns pull --if-repo 2>&1); c=$?; case $c in 0) ;; 4) printf 'A Syns resolution is pending in this folder. Finish it before new work.\\n\\n%s\\n' \"$o\" ;; 3) printf '{\"systemMessage\":\"Syns pull could not reach the server; local work is kept and the next hook retries.\"}\\n' ;; 5) printf '{\"systemMessage\":\"Syns needs a person for this folder; see syns status and syns resolution show.\"}\\n' ;; *) printf '{\"systemMessage\":\"Syns pull was refused (exit %s: credential, permission or validation); run syns pull to see why.\"}\\n' \"$c\" ;; esac; exit 0",
             "statusMessage": "Syns: pulling repository"
           }
         ]
@@ -17,8 +18,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "syns push --if-repo -m \"${SYNS_PUSH_MESSAGE:-codex cli session}\" >/dev/null",
-            "statusMessage": "Syns: pushing session"
+            "timeout": 300,
+            "command": "command -v syns >/dev/null 2>&1 || exit 0; s=$(sed -n 's/.*\"session_id\" *: *\"\\([^\"]*\\)\".*/\\1/p'); [ -n \"$SYNS_INTEGRATION\" ] || SYNS_INTEGRATION=codex; [ -n \"$SYNS_RUN\" ] || SYNS_RUN=$s; [ -n \"$SYNS_TRIGGER\" ] || SYNS_TRIGGER=finish; export SYNS_INTEGRATION SYNS_RUN SYNS_TRIGGER; o=$(syns sync --if-repo 2>&1); c=$?; case $c in 0) ;; 4) printf '%s\\n' \"$o\" >&2; exit 2 ;; 3) printf '{\"systemMessage\":\"Syns sync could not reach the server; local work is kept and the next hook retries.\"}\\n' ;; 5) printf '{\"systemMessage\":\"Syns needs a person for this folder; see syns status and syns resolution show.\"}\\n' ;; *) printf '{\"systemMessage\":\"Syns sync was refused (exit %s: credential, permission or validation); run syns sync to see why.\"}\\n' \"$c\" ;; esac; exit 0",
+            "statusMessage": "Syns: syncing repository"
           }
         ]
       }

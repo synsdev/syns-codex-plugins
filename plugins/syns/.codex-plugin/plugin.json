@@ -1,7 +1,7 @@
 {
   "name": "syns",
-  "version": "0.2.1",
-  "description": "Auto-pull on Codex session start, auto-push on every turn-stop, and syns-init to build or join an agent-readable repository.",
+  "version": "0.3.0",
+  "description": "Pull on Codex session start and sync on every turn-stop, continuing the agent only when a resolution is required, plus syns-init to build or join an agent-readable repository.",
   "author": {
     "name": "Bartosz Sojka",
     "email": "bartsoj@gmail.com",
@@ -22,8 +22,8 @@
   "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Syns",
-    "shortDescription": "Build or join a Syns repository; pull on start, push on Stop.",
-    "longDescription": "Includes the syns-init skill for digest-bound local proposal and evaluation before adoption, plus lifecycle hooks that pull a joined Syns repository on startup/resume and push on every turn-stop. Bundled hooks require trust.",
+    "shortDescription": "Build or join a Syns repository; pull on start, sync on Stop.",
+    "longDescription": "Includes the syns-init skill for digest-bound local proposal and evaluation before adoption, plus lifecycle hooks that pull a joined Syns repository on startup/resume and sync it on every turn-stop, continuing the turn only when a resolution is required. Bundled hooks require trust, and changed hooks must be trusted again.",
     "developerName": "Syns",
     "category": "Productivity",
     "capabilities": [

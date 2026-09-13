@@ -4,36 +4,54 @@ Two lifecycle hooks and one setup skill.
 
 | Surface | Action |
 |:--|:--|
-| `SessionStart` | Installs `syns` on first run if missing, then `syns pull --if-repo` — pulls if the session's working tree resolves to a Syns repo, no-op otherwise. Matches `startup` and `resume`. |
-| `Stop` | `syns push --if-repo -m "<your message>"` — pushes the working tree as a single commit, once per turn. |
+| `SessionStart` | Installs `syns` if it is missing, then `syns pull --if-repo`. Matches `startup` and `resume`. |
+| `Stop` | `syns sync --if-repo` — brings in the repository head and publishes everything written in the folder, once per turn. |
 | `syns-init` skill | Mines an existing project, proposes an agent-readable repository for local HTML review, runs a matched read-only comparison after approval, and adopts or privately publishes only explicitly approved operations. An `owner/name` invocation joins instead. |
 
 The setup skill is packaged from the same canonical source as the hosted and Claude copies. `checksums.json` verifies its skill, references, review assets, renderers, and fixtures.
 
 The setup skill does not install lifecycle hooks. Codex runs the hooks below only after they are trusted.
 
-## Configuration
+## What the hooks do with the result
 
-The `syns push` in the `Stop` hook reads `$SYNS_PUSH_MESSAGE` for the commit message, falling back to `codex cli session` if unset. Set the variable to customize.
+Each hook is one command line in `hooks/hooks.json`, with no script behind it. It runs the command a person would run, and only turns the CLI's exit code into Codex's hook answer:
+
+| `syns` exits | `SessionStart` | `Stop` |
+|:--|:--|:--|
+| `0`: synced, no changes, or not a Syns folder | nothing | nothing |
+| `4`: resolution required | the CLI's instruction becomes developer context, asking Codex to finish the resolution before new work | exit `2`: the turn continues with the CLI's instruction |
+| `3`: server unreachable | a warning that the next hook retries | the same warning |
+| `5`: attention required | a warning to see `syns status` and `syns resolution show` | the same warning |
+| anything else: a credential, permission or validation refusal | a warning to run `syns pull` and see why | a warning to run `syns sync` and see why |
+
+Codex does not show a failed hook's own output, so failures are answered with a fixed warning (`systemMessage`) for each exit code. The exit code alone doesn't tell a credential refusal from a validation one; rerunning the command shows the CLI's own line.
+
+Nothing publishes past a moved head until Codex runs `syns resolution continue`. Stop continues the turn every time sync reports a resolution, and the CLI bounds the rounds, ending with attention required.
+
+## Provenance
+
+Every publication records who published it. The hooks set `SYNS_INTEGRATION=codex`, `SYNS_RUN` (the session id) and `SYNS_TRIGGER` (`start` or `finish`). Each is only a default: a value you set in your environment always wins. `SYNS_TASK`, if you set it, is sent alongside.
+
+Codex gives hooks no way to set the agent's own environment. A `syns resolution continue` that Codex runs itself therefore carries only the values your environment sets.
 
 ## Trust the hooks
 
-Codex skips plugin-bundled hooks until you review and trust them. After enabling the plugin, run `/hooks` in Codex to review and trust the `SessionStart` and `Stop` hooks. For one-off automation you can instead start Codex with `--dangerously-bypass-hook-trust`. Disable all hooks globally with `[features] hooks = false` in `config.toml`.
+Codex skips plugin-bundled hooks until you review and trust them. After enabling or updating the plugin, run `/hooks` in Codex to review and trust the `SessionStart` and `Stop` hooks. A hook whose command changed must be trusted again, or it silently stops running. For one-off automation you can instead start Codex with `--dangerously-bypass-hook-trust`. Disable all hooks globally with `[features] hooks = false` in `config.toml`.
+
+## Requirements
+
+- Syns CLI 0.3.0 or newer (`syns upgrade`).
+- macOS and Linux. The hook lines are POSIX shell, run through `$SHELL -lc`.
 
 ## Behavior contract
 
-- **Outside Syns repos: silent no-op.** The `--if-repo` flag exits 0 with no output.
-- **Stop never blocks or loops.** `syns push --if-repo` cannot exit `2`, which is the only exit code Codex treats as "continue the turn." Genuine push failures (network, auth, server) exit non-zero and surface as a hook error — the turn still ends normally.
-- **Stop is per-turn.** A session with N model turns produces up to N commits (empty turns push nothing).
-- **No `Stop` stdout noise.** The push success banner is sent to `/dev/null` so an exit-0 push produces no output, satisfying Codex's "JSON-or-empty on exit 0" rule for `Stop`. The `>/dev/null` does not change any exit-code behavior; `stderr` is left intact so real errors stay visible.
-- **Clean session context.** The first-run installer's output is suppressed so it isn't injected as Codex "developer context."
+- **Outside Syns repos: silent no-op.** No output, exit 0.
+- **A successful pull or sync prints nothing.**
+- **Only a resolution continues the turn.** Every other failure is a warning, and the turn ends normally.
+- **Stop is per-turn.** Each turn publishes what the folder holds at that moment, edits from other writers included; a turn that changed nothing publishes nothing.
+- **`SYNS_PUSH_MESSAGE` is no longer read.** `syns sync` takes no commit message.
 
 ## Known limitations
 
-- macOS and Linux only. Windows users can install the CLI manually via Scoop; the hook commands themselves don't yet run under PowerShell.
-- **First-run install activates next session.** `install.syns.dev/install.sh` edits your shell rc rather than the running process environment, so a freshly installed `syns` is not on `PATH` within the same session — the first session's pull silently no-ops, and `syns` becomes usable from the next session onward.
-
-## Implementation notes
-
-- Both hooks are one-line inline commands in `hooks/hooks.json`; there are no wrapper scripts.
-- The `SessionStart` command combines install + pull into a single command (`… ; syns pull --if-repo`). Codex launches multiple command hooks in a group concurrently, so two separate entries would race and `pull` could run before `syns` exists; chaining them in one command preserves the install-then-pull ordering.
+- **First-run install activates next session.** `install.syns.dev/install.sh` edits your shell rc rather than the running process environment. A freshly installed `syns` is therefore not on `PATH` within the same session: the first session's hooks silently no-op, and `syns` works from the next session onward.
+- Codex launches a group's hooks concurrently, so `SessionStart` installs and pulls in one command to keep that order.

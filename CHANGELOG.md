@@ -4,6 +4,29 @@ All notable changes to `syns-codex-plugins` are documented here. The format foll
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-09-13
+
+### Changed
+
+- `syns` plugin: `Stop` runs `syns sync --if-repo` instead of `syns push`. It brings in the repository head and publishes the whole folder; where the head moved, it prepares a resolution instead of refusing.
+- Only a resolution continues Codex:
+  - `Stop` exits `2` with the CLI's instruction.
+  - `SessionStart` puts a pending resolution into developer context before new work.
+- Synced, no changes and the no-repository skip print nothing. Every other failure answers with a fixed `systemMessage` per exit code (server unreachable, attention required, or refused), because Codex does not show a failed hook's own output.
+- Every publication carries published-by provenance: `SYNS_INTEGRATION=codex`, `SYNS_RUN` (the session id) and `SYNS_TRIGGER` (`start` or `finish`). Each is a default only: a value set in the environment wins.
+- Both hooks remain single command lines in `hooks/hooks.json`.
+- **The hook commands changed, so Codex asks for them to be trusted again in `/hooks`.** Until then they do not run.
+
+### Removed
+
+- `SYNS_PUSH_MESSAGE`: `syns sync` takes no commit message.
+
+### Requires
+
+- Syns CLI 0.3.0 or newer.
+
+## [0.2.1]
+
 ### Added
 
 - `syns-init` skill in the `syns` plugin: the byte-identical hosted/Claude/Codex setup package, with digest-bound local review and evaluation before adoption or private publication.
@@ -44,4 +67,5 @@ First release. Codex port of `syns-claude-plugins`. One plugin, two hooks.
 - macOS and Linux only. Windows users can install the CLI manually via Scoop; the hook commands themselves don't yet run under PowerShell.
 - First-run install activates from the next session (install.sh edits the shell rc, not the running process `PATH`).
 
+[0.3.0]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.3.0
 [0.1.0]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.1.0
