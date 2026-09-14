@@ -22,6 +22,8 @@ const HOST = {
   failures: "json",
   // whether the start hook writes the agent's defaults to CLAUDE_ENV_FILE
   envFile: false,
+  // whether a continuation turn is also recognised by its prompt carrying the instruction
+  promptSignal: false,
 };
 
 const hooks = JSON.parse(readFileSync(new URL(HOST.hooksFile, import.meta.url), "utf8")).hooks;
@@ -71,18 +73,32 @@ function sandbox() {
         return [line.slice(0, at), line.slice(at + 1)];
       }));
     },
-    run(command, { shell, env = {}, cli = true }) {
+    run(command, { shell, env = {}, cli = true, input = {} }) {
       const base = { PATH: `${cli ? withCli : withoutCli}:/usr/bin:/bin`, HOME: root };
       if (HOST.sessionEnv) base[HOST.sessionEnv] = "sess-1";
       const result = spawnSync(shell, ["-c", command], {
         cwd: root,
-        input: JSON.stringify({ session_id: "sess-1", cwd: root, hook_event_name: "hook" }),
+        input: JSON.stringify({ session_id: "sess-1", cwd: root, hook_event_name: "hook", stop_hook_active: false, ...input }),
         env: { ...base, ...env },
         encoding: "utf8",
       });
       return { code: result.status, stdout: result.stdout, stderr: result.stderr };
     },
   };
+}
+
+/** Whether a result reports a resolution the agent was already asked to finish, without continuing it again. */
+function reportedStillPending(result) {
+  if (HOST.failures === "stderr") {
+    assert.equal(result.code, 1, result.stderr);
+    assert.equal(result.stdout, "");
+    assert.ok(result.stderr.startsWith("A Syns resolution is still pending after the agent was asked once this turn."), result.stderr);
+    assert.ok(result.stderr.includes(INSTRUCTION), result.stderr);
+    return;
+  }
+  assert.equal(result.code, 0, result.stderr);
+  assert.equal(result.stderr, "");
+  assert.match(JSON.parse(result.stdout).systemMessage, /still pending after Codex was asked once this turn/);
 }
 
 /** The report a failure leaves for the person, asserting it does not continue the agent. */
@@ -122,14 +138,26 @@ for (const shell of SHELLS) {
     assert.deepEqual(box.run(START, { shell }), SILENT);
   });
 
-  test(name("resolution required at finish continues the agent with the CLI's instruction"), () => {
+  test(name("resolution required at finish continues the agent once per turn"), () => {
     const box = sandbox();
     box.answer(4, `${INSTRUCTION}\n`, "error: resolution required for alice/proj (recovery id rec-1)\n");
-    const result = box.run(FINISH, { shell });
-    assert.equal(result.code, 2);
-    assert.equal(result.stdout, "");
-    assert.ok(result.stderr.includes(INSTRUCTION), result.stderr);
+    const first = box.run(FINISH, { shell });
+    assert.equal(first.code, 2);
+    assert.equal(first.stdout, "");
+    assert.ok(first.stderr.includes(INSTRUCTION), first.stderr);
+    reportedStillPending(box.run(FINISH, { shell, input: { stop_hook_active: true } }));
+    // the next turn starts over
+    assert.equal(box.run(FINISH, { shell }).code, 2);
   });
+
+  if (HOST.promptSignal) {
+    test(name("a continuation turn is recognised by its prompt when stop_hook_active is not set"), () => {
+      const box = sandbox();
+      box.answer(4, `${INSTRUCTION}\n`, "error: resolution required for alice/proj (recovery id rec-1)\n");
+      reportedStillPending(box.run(FINISH, { shell, input: { prompt: `${INSTRUCTION}\nerror: resolution required`, prompt_response: "I stopped." } }));
+      assert.equal(box.run(FINISH, { shell, input: { prompt: "Add a line to notes.md", prompt_response: "Done." } }).code, 2);
+    });
+  }
 
   test(name("a resolution pending at start is handed to the agent before new work"), () => {
     const box = sandbox();

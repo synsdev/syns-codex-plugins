@@ -26,7 +26,7 @@ Each hook is one command line in `hooks/hooks.json`, with no script behind it. I
 
 Codex does not show a failed hook's own output, so failures are answered with a fixed warning (`systemMessage`) for each exit code. The exit code alone doesn't tell a credential refusal from a validation one; rerunning the command shows the CLI's own line.
 
-Nothing publishes past a moved head until Codex runs `syns resolution continue`. Stop continues the turn every time sync reports a resolution, and the CLI bounds the rounds, ending with attention required.
+Nothing publishes past a moved head until Codex runs `syns resolution continue`. Stop continues the turn once per turn. If Codex stops again in the same turn with the resolution unfinished, the hook warns you instead of continuing it again, and your next prompt starts over.
 
 ## Provenance
 

@@ -4,6 +4,12 @@ All notable changes to `syns-codex-plugins` are documented here. The format foll
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-09-14
+
+### Changed
+
+- The finish hook sends the agent back once per turn, keyed on `stop_hook_active`, for a resolution. If the agent stops again in the same turn with the resolution unfinished, the hook reports it instead of blocking again, and the next prompt starts over. Before, an agent that declined a resolution was blocked on every stop, until the host gave up.
+
 ## [0.3.0] — 2026-09-13
 
 ### Changed
@@ -67,5 +73,6 @@ First release. Codex port of `syns-claude-plugins`. One plugin, two hooks.
 - macOS and Linux only. Windows users can install the CLI manually via Scoop; the hook commands themselves don't yet run under PowerShell.
 - First-run install activates from the next session (install.sh edits the shell rc, not the running process `PATH`).
 
+[0.3.1]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.3.1
 [0.3.0]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.3.0
 [0.1.0]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.1.0
