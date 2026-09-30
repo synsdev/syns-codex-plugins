@@ -10,7 +10,7 @@ same behavior, adapted to Codex's hook contract.
 
 | Plugin                                   | Description                                                                                 |
 |:-----------------------------------------|:--------------------------------------------------------------------------------------------|
-| [`syns`](./plugins/syns)                 | `syns-init` builds or joins an agent-readable repository; lifecycle hooks pull on start and sync on Stop. |
+| [`syns`](./plugins/syns)                 | Lifecycle hooks: pull on session start and sync on every Stop.                              |
 | [`plan-sharing`](./plugins/plan-sharing) | Captures the Plan Mode plan into the current Syns repo and warns when it overlaps another agent's plan. |
 
 ## Install

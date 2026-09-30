@@ -1,16 +1,13 @@
 # `syns` plugin (Codex)
 
-Two lifecycle hooks and one setup skill.
+Two lifecycle hooks. The plugin ships no skill: setting up Syns is [syns.app/skill.md](https://syns.app/skill.md), which any agent reads with nothing installed.
 
 | Surface | Action |
 |:--|:--|
 | `SessionStart` | Installs `syns` if it is missing, then `syns pull --if-repo`. Matches `startup` and `resume`. |
 | `Stop` | `syns sync --if-repo` — brings in the repository head and publishes everything written in the folder, once per turn. |
-| `syns-init` skill | Mines an existing project, proposes an agent-readable repository for local HTML review, runs a matched read-only comparison after approval, and adopts or privately publishes only explicitly approved operations. An `owner/name` invocation joins instead. |
 
-The setup skill is packaged from the same canonical source as the hosted and Claude copies. `checksums.json` verifies its skill, references, review assets, renderers, and fixtures.
-
-The setup skill does not install lifecycle hooks. Codex runs the hooks below only after they are trusted.
+Codex runs the hooks below only after they are trusted.
 
 ## What the hooks do with the result
 

@@ -4,6 +4,12 @@ All notable changes to `syns-codex-plugins` are documented here. The format foll
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-09-30
+
+### Removed
+
+- The syns-init skill. Setting up Syns is now https://syns.app/skill.md, which any agent reads with nothing installed.
+
 ## [0.3.1] — 2026-09-14
 
 ### Changed
@@ -73,6 +79,7 @@ First release. Codex port of `syns-claude-plugins`. One plugin, two hooks.
 - macOS and Linux only. Windows users can install the CLI manually via Scoop; the hook commands themselves don't yet run under PowerShell.
 - First-run install activates from the next session (install.sh edits the shell rc, not the running process `PATH`).
 
+[0.4.0]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.4.0
 [0.3.1]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.3.1
 [0.3.0]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.3.0
 [0.1.0]: https://github.com/synsdev/syns-codex-plugins/releases/tag/v0.1.0
