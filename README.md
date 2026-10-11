@@ -11,7 +11,6 @@ same behavior, adapted to Codex's hook contract.
 | Plugin                                   | Description                                                                                 |
 |:-----------------------------------------|:--------------------------------------------------------------------------------------------|
 | [`syns`](./plugins/syns)                 | Lifecycle hooks: pull on session start and sync on every Stop.                              |
-| [`plan-sharing`](./plugins/plan-sharing) | Captures the Plan Mode plan into the current Syns repo and warns when it overlaps another agent's plan. |
 
 ## Install
 

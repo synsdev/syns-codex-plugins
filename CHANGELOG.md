@@ -4,6 +4,12 @@ All notable changes to `syns-codex-plugins` are documented here. The format foll
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-10-11
+
+### Removed
+
+- `plan-sharing`: no longer offered. To remove an installed copy: `codex plugin remove plan-sharing@syns-codex-plugins`.
+
 ## [0.4.0] — 2026-09-30
 
 ### Removed
